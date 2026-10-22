@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+// 1. Next.js Link component ko import kiya
+import Link from "next/link"; 
 
 const CLOUD_PRICING = {
   aws: { name: "AWS (EC2 + RDS)", base: 29, variableRate: 0.005 },
@@ -71,6 +73,28 @@ export default function Home() {
           ))}
         </section>
       </div>
+
+      {/* 2. Naya Section: Google Spiders aur Users ke liye Internal Links Navigation */}
+      <section className="mt-16 border-t border-slate-900 pt-10">
+        <h3 className="text-xl font-bold text-slate-300 mb-4">Deep Dive Cloud Comparisons</h3>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Link 
+            href="/compare/aws-vs-vercel" 
+            className="block p-5 bg-slate-900/30 border border-slate-850 rounded-xl hover:border-blue-500/50 transition-all group"
+          >
+            <h4 className="font-bold text-slate-200 group-hover:text-blue-400 transition-colors">AWS vs Vercel Analysis &rarr;</h4>
+            <p className="text-xs text-slate-500 mt-1">Infrastructure raw control vs frontend velocity optimization model.</p>
+          </Link>
+
+          <Link 
+            href="/compare/supabase-vs-firebase" 
+            className="block p-5 bg-slate-900/30 border border-slate-850 rounded-xl hover:border-emerald-500/50 transition-all group"
+          >
+            <h4 className="font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">Supabase vs Firebase Analysis &rarr;</h4>
+            <p className="text-xs text-slate-500 mt-1">Relational SQL engine architecture vs document schemaless scaling tools.</p>
+          </Link>
+        </div>
+      </section>
 
       <script
         type="application/ld+json"
