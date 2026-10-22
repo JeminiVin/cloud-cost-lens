@@ -1,69 +1,94 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+
+const CLOUD_PRICING = {
+  aws: { name: "AWS (EC2 + RDS)", base: 29, variableRate: 0.005 },
+  vercel: { name: "Vercel Enterprise", base: 20, variableRate: 0.002 },
+  supabase: { name: "Supabase Pro", base: 25, variableRate: 0.001 }
+};
 
 export default function Home() {
+  const [traffic, setTraffic] = useState<number>(5000);
+  const [databaseUsage, setDatabaseUsage] = useState<number>(10);
+
+  const calculateCost = (provider: keyof typeof CLOUD_PRICING) => {
+    const config = CLOUD_PRICING[provider];
+    const total = config.base + (traffic * config.variableRate) + (databaseUsage * 0.5);
+    return total.toFixed(2);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+    <main className="max-w-5xl mx-auto px-6 py-12">
+      <header className="text-center mb-12">
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 mb-4">
+          CloudCost-Lens
+        </h1>
+        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          Calculate and optimize architectural expenses across major providers instantly.
+        </p>
+      </header>
+
+      <div className="grid md:grid-cols-3 gap-8 items-start">
+        <section className="md:col-span-1 bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+          <h2 className="text-xl font-bold mb-6 text-slate-200">Scale Architecture</h2>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-slate-400 mb-2">
+              Monthly Active Users: <span className="text-emerald-400 font-bold">{traffic.toLocaleString()}</span>
+            </label>
+            <input 
+              type="range" min="1000" max="100000" step="5000" value={traffic}
+              onChange={(e) => setTraffic(Number(e.target.value))}
+              className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-slate-400 mb-2">
+              Database Storage: <span className="text-blue-400 font-bold">{databaseUsage} GB</span>
+            </label>
+            <input 
+              type="range" min="1" max="500" step="10" value={databaseUsage}
+              onChange={(e) => setDatabaseUsage(Number(e.target.value))}
+              className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            />
+          </div>
+        </section>
+
+        <section className="md:col-span-2 grid gap-4">
+          {(Object.keys(CLOUD_PRICING) as Array<keyof typeof CLOUD_PRICING>).map((key) => (
+            <div key={key} className="bg-slate-900/50 border border-slate-800/80 p-6 rounded-2xl flex justify-between items-center hover:border-slate-700 transition-all">
+              <div>
+                <h3 className="text-lg font-bold text-slate-100">{CLOUD_PRICING[key].name}</h3>
+                <p className="text-xs text-slate-500 mt-1">Includes base capacity configuration + bandwidth scale factors</p>
+              </div>
+              <div className="text-right">
+                <span className="text-2xl md:text-3xl font-black text-emerald-400">${calculateCost(key)}</span>
+                <span className="text-xs text-slate-500 block">/ month estimated</span>
+              </div>
+            </div>
+          ))}
+        </section>
+      </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "CloudCost-Lens",
+            "operatingSystem": "All",
+            "applicationCategory": "BusinessApplication",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          })
+        }}
+      />
+    </main>
   );
 }
