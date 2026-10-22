@@ -1,3 +1,4 @@
+
 import { MetadataRoute } from 'next'
  
 export default function robots(): MetadataRoute.Robots {
@@ -6,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://cloudcostlens.com',
+    sitemap: 'https://vercel.app', // 👈 Live URL yahan bhi badli hai
   }
 }
