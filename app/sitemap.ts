@@ -1,13 +1,13 @@
-
 import { MetadataRoute } from 'next'
  
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = [''].map(
+  // Hamare saare dynamic urls array mapping
+  const routes = ['', '/compare/aws-vs-vercel', '/compare/supabase-vs-firebase'].map(
     (route) => ({
-      url: `https://cloud-cost-lens.vercel.app${route}`, // 👈 Live URL yahan update ki hai
+      url: `https://vercel.app${route}`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
-      priority: 1.0,
+      priority: route === '' ? 1.0 : 0.8,
     })
   )
  
